@@ -1,0 +1,98 @@
+<div>
+    <h4>Danh sách chờ xếp phòng</h4>
+    <br>
+</div>
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div nz-row>
+        <div nz-col nzSpan="8">
+            <label for="">Tìm kiếm</label><br>
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input type="text" nz-input placeholder="Nhập từ khoá" #inputSearch />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"
+                        (click)="getListContractPending(inputSearch.value, 1, 10)"></i></button>
+            </ng-template>
+        </div>
+        <div nz-col nzSpan="3">
+            <label for="">Trạng thái SV duyệt</label><br>
+            <nz-select [(ngModel)]="statusFilter" style="width: 100%;" (ngModelChange)="changeStatusFilter()">
+                <nz-option [nzValue]="-1" nzLabel="Tất cả"></nz-option>
+                <nz-option [nzValue]="0" nzLabel="Chờ duyệt"></nz-option>
+                <nz-option [nzValue]="1" nzLabel="Từ chối"></nz-option>
+                <nz-option [nzValue]="2" nzLabel="Chấp nhận"></nz-option>
+            </nz-select>
+        </div>
+        <div nz-col [nzSpan]="3" style="float: left;">
+            <label for="">Phòng</label><br>
+            <nz-select [(ngModel)]="roomFilter" style="width: 100%;" (ngModelChange)="onRoomFilter()">
+                <nz-option [nzValue]="0" nzLabel="Tất cả"></nz-option>
+                <nz-option *ngFor="let item of roomSelect" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+        </div>
+        <div nz-col nzSpan="10">
+            <label for="">&nbsp;</label><br>
+            <button nz-button [nzType]="'primary'" style="float: right;" (click)="autoScheduleRoom()">
+                <span>Xếp phòng tự động</span>
+            </button>
+        </div>
+    </div>
+    <br>
+    <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+        <ng-container *nzModalContent>
+
+        </ng-container>
+    </nz-modal>
+
+    <nz-table #basicTable [nzData]="listContractPending.items" *ngIf="listContractPending != undefined"
+        [nzFrontPagination]="false">
+        <thead>
+            <tr>
+                <th style="background-color: #002140; color: white;">STT</th>
+                <th style="background-color: #002140; color: white;">Khoá</th>
+                <th style="background-color: #002140; color: white;">Mã sinh viên</th>
+                <th style="background-color: #002140; color: white;">Tên sinh viên</th>
+                <th style="background-color: #002140; color: white;">Giới tính</th>
+                <th style="background-color: #002140; color: white;">Số điện thoại</th>
+                <th style="background-color: #002140; color: white;">Giá phòng mong muốn</th>
+                <th style="background-color: #002140; color: white;">Khu ở</th>
+                <th style="background-color: #002140; color: white;">Phòng ở</th>
+                <th style="background-color: #002140; color: white;">Giá phòng</th>
+                <th style="background-color: #002140; color: white;">Trạng thái SV xác nhận</th>
+                <th style="background-color: #002140; color: white;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data">
+                <td>{{ listContractPending.items.indexOf(data) + 1 }}</td>
+                <td>{{ data.academicYear }}</td>
+                <td>{{ data.studentCode }}</td>
+                <td>{{ data.studentName }}</td>
+                <td *ngIf="data.gender == 1">Nam</td>
+                <td *ngIf="data.gender == 0">Nữ</td>
+                <td>{{ data.studentPhone }}</td>
+                <td>{{ data.desiredPrice | currency : "VND"}}</td>
+                <td>{{ data.areaName }}</td>
+                <td>{{ data.roomName }}</td>
+                <td>{{ data.roomPrice | currency : "VND"}}</td>
+                <td *ngIf="data.studentConfirmStatus == 0" style="color: #efbf38;">Chờ duyệt</td>
+                <td *ngIf="data.studentConfirmStatus == 1" style="color: #f40404;">Từ chối</td>
+                <td *ngIf="data.studentConfirmStatus == 2" style="color: #25da91;">Chấp nhận</td>
+                <td>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+                        <i nz-icon nzType="bars" nzTheme="outline"></i>
+                    </a>
+                    <nz-dropdown-menu #menu="nzDropdownMenu">
+                        <ul nz-menu>
+                            <li nz-menu-item (click)="scheduleRoom(data.id)">Xếp phòng</li>
+                        </ul>
+                    </nz-dropdown-menu>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <nz-pagination *ngIf="listContractPending != undefined" [(nzPageIndex)]="pageIndex"
+        [nzTotal]="listContractPending.totalRecords" [nzPageSize]="10"
+        (nzPageIndexChange)="getListContractPending('', pageIndex, 10)">
+    </nz-pagination>
+</nz-spin>

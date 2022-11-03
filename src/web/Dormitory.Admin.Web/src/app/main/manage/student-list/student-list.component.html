@@ -1,0 +1,121 @@
+<div>
+    <h4>Danh sách sinh viên</h4>
+    <br>
+</div>
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div nz-row>
+        <div nz-col nzSpan="8">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input type="text" nz-input placeholder="Nhập từ khoá" #inputSearch />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"
+                        (click)="getListStudent(inputSearch.value, 1, 10)"></i></button>
+            </ng-template>
+        </div>
+    </div>
+
+    <nz-modal [(nzVisible)]="isVisible" nzTitle="Thông tin chi tiết" (nzOnCancel)="handleCancel()"
+        (nzOnOk)="handleOk()">
+        <ng-container *nzModalContent>
+            <div style="background: #ECECEC;padding:10px;">
+                <nz-card [nzBordered]="false">
+                    <b>Dân tộc:</b> {{currentStudent.ethnic}} <br>
+                    <b>Tôn giáo:</b> {{currentStudent.religion}} <br>
+                    <b>Hộ khẩu thường trú:</b> {{currentStudent.baseAdress}} <br>
+                    <b>Tên người thân:</b> {{currentStudent.relativeName}} <br>
+                    <b>SĐT người thân:</b> {{currentStudent.relativePhone}} <br>
+                    <b>Điểm ưu tiên:</b> {{currentStudent.point}} <br>
+                </nz-card>
+            </div>
+        </ng-container>
+    </nz-modal>
+
+    <nz-modal [(nzVisible)]="isVisible1" nzTitle="Tạo tài khoản" (nzOnCancel)="handleCancel1()" (nzOnOk)="handleOk1()">
+        <ng-container *nzModalContent>
+            <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()"
+                *ngIf="currentAccount == null || currentAccount == undefined">
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Tên tài khoản</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Hãy nhập tên tài khoản">
+                        <input nz-input formControlName="userName" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Mật khẩu</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Hãy nhập mật khẩu">
+                        <input nz-input formControlName="password" type="password" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7">Email</nz-form-label>
+                    <nz-form-control [nzSpan]="12">
+                        <input nz-input formControlName="email" />
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+            <div *ngIf="currentAccount != null || currentAccount != undefined">
+                <h5>Tài khoản hiện tại:</h5> &nbsp;
+                <b>{{currentAccount.userName}}</b>
+                <button nz-button nzSize="small" nzType="primary" nzDanger style="float: right;"
+                    (click)="deleteAccount(currentAccount.id)">
+                    Xoá
+                </button>
+            </div>
+        </ng-container>
+    </nz-modal>
+
+    <br>
+    <nz-table #basicTable [nzData]="listStudent.items" *ngIf="listStudent != undefined" [nzFrontPagination]="false">
+        <thead>
+            <tr>
+                <th style="background-color: #002140; color: white;">STT</th>
+                <th style="background-color: #002140; color: white;">Tên sinh viên</th>
+                <th style="background-color: #002140; color: white;">Ngày sinh</th>
+                <th style="background-color: #002140; color: white;">Giới tính</th>
+                <th style="background-color: #002140; color: white;">Mã sinh viên</th>
+                <th style="background-color: #002140; color: white;">Khoá</th>
+                <th style="background-color: #002140; color: white;">Chuyên ngành</th>
+                <th style="background-color: #002140; color: white;">Lớp</th>
+                <th style="background-color: #002140; color: white;">Số điện thoại</th>
+                <th style="background-color: #002140; color: white;">Email</th>
+                <th style="background-color: #002140; color: white;">Địa chỉ</th>
+                <th style="background-color: #002140; color: white;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let data of basicTable.data">
+                <tr>
+                    <td>{{ listStudent.items.indexOf(data) + 1 }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.dob | date : "dd-MM-yyyy" }}</td>
+                    <td *ngIf="data.gender == 1">Nam</td>
+                    <td *ngIf="data.gender == 0">Nữ</td>
+                    <td>{{ data.studentCode }}</td>
+                    <td>{{ data.academicYear }}</td>
+                    <td>{{ data.major }}</td>
+                    <td>{{ data.class }}</td>
+                    <td>{{ data.phone }}</td>
+                    <td>{{ data.email }}</td>
+                    <td>{{ data.adress }}</td>
+                    <td>
+                        <button nz-button nzSize="small" nzType="primary" (click)="showModal(data)">
+                            Chi tiết
+                        </button> &nbsp;
+                        <button nz-button nzSize="small" nzType="primary" (click)="showModal1(data)">
+                            Tạo TK
+                        </button>
+                    </td>
+
+                </tr>
+            </ng-container>
+
+        </tbody>
+    </nz-table>
+    <nz-pagination *ngIf="listStudent != undefined" [(nzPageIndex)]="pageIndex" [nzTotal]="listStudent.totalRecords"
+        [nzPageSize]="10" (nzPageIndexChange)="getListStudent('', pageIndex, 10)">
+    </nz-pagination>
+</nz-spin>

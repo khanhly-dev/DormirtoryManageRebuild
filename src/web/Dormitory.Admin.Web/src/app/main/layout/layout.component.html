@@ -1,0 +1,73 @@
+<nz-layout style="height: 100%;">
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed">
+        <div class="logo">
+            <div nz-row >
+                <div nz-col nzSpan="4" style="margin-top: 2%;">
+                    <img src="assets/logo.png" alt="" style="width: 25px">
+                </div>
+                <div nz-col nzSpan="20" *ngIf="!isCollapsed" style="margin-top: 3%;">
+                    <b style="color:white;">Quản lý ký túc xá</b>
+                </div>
+            </div>
+        </div>
+        <ul nz-menu nzTheme="dark" nzMode="inline">
+            <li nz-menu-item routerLink="dashboard">
+                <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+                <span>Thống kê</span>
+            </li>
+            <li nz-submenu nzTitle="Danh mục" nzIcon="ordered-list">
+                <ul>
+                    <li nz-menu-item routerLink="area">Khu vực</li>
+                    <li nz-menu-item routerLink="room">Phòng</li>
+                    <li nz-menu-item routerLink="facility">Cơ sở vật chất</li>
+                    <li nz-menu-item routerLink="service">Dịch vụ</li>
+                    <li nz-menu-item routerLink="criteria">Tiêu chuẩn đánh giá</li>
+                    <li nz-menu-item routerLink="contract-config">Cấu hình hợp đồng</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="Quản lý KTX" nzIcon="solution">
+                <ul>
+                    <li nz-menu-item routerLink="contract-pending">D.sách Đơn đăng kí</li>
+                    <li nz-menu-item routerLink="waiting-room">D.sách chờ xếp phòng</li>
+                    <li nz-menu-item routerLink="completed-contract">D.sách hợp đồng</li>
+                    <li nz-menu-item routerLink="contract-fee">D.sách thu phí phòng</li>
+                    <li nz-menu-item routerLink="service-fee">D.sách thu phí điện nước</li>
+                
+                    <li nz-menu-item routerLink="discipline">D.sách kỷ luật</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="Quản trị người dùng" nzIcon="solution">
+                <ul>
+                    <li nz-menu-item routerLink="student-list">Quản lý TK sinh viên</li>
+                    <li nz-menu-item routerLink="user-list">Quản lý TK cán bộ</li>
+                </ul>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+                (click)="isCollapsed = !isCollapsed"></i>
+            <div style="float: right; margin-right: 40px;">
+                <nz-avatar nzSize="large" nzIcon="user"></nz-avatar>
+                <a nz-dropdown [nzDropdownMenu]="menu">
+                    {{userName}}
+                    <i nz-icon nzType="down"></i>
+                </a>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                    <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="logOut()">Đăng xuất</li>
+                    </ul>
+                </nz-dropdown-menu>
+            </div>
+
+        </nz-header>
+        <nz-content>
+            <br>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+        <nz-footer></nz-footer>
+    </nz-layout>
+</nz-layout>

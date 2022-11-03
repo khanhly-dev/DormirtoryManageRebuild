@@ -1,0 +1,92 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div nz-row>
+        <div nz-col nzSpan="12">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input type="text" nz-input placeholder="Nhập từ khoá" #inputSearch />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"
+                        (click)="getListContractPending(inputSearch.value, student.id, 1, 10)"></i></button>
+            </ng-template>
+        </div>
+    </div>
+    <br>
+    <nz-table #basicTable [nzData]="listContractPending.items" *ngIf="listContractPending != undefined"
+        [nzFrontPagination]="false">
+        <thead>
+            <tr>
+                <th style="background-color: #002140; color: white;">STT</th>
+                <th style="background-color: #002140; color: white;">Khoá</th>
+                <th style="background-color: #002140; color: white;">Mã sinh viên</th>
+                <th style="background-color: #002140; color: white;">Tên sinh viên</th>
+                <th style="background-color: #002140; color: white;">Giới tính</th>
+                <th style="background-color: #002140; color: white;">Số điện thoại</th>
+                <th style="background-color: #002140; color: white;">Ngày đăng ký</th>
+                <th style="background-color: #002140; color: white;">Ngày bắt đầu hợp đồng</th>
+                <th style="background-color: #002140; color: white;">Hạn hợp đồng</th>
+                <th style="background-color: #002140; color: white;">Giá phòng mong muốn</th>
+                <th style="background-color: #002140; color: white;">Giá phòng</th>
+                <th style="background-color: #002140; color: white;">Khu ở</th>
+                <th style="background-color: #002140; color: white;">Phòng ở</th>
+                <th style="background-color: #002140; color: white;">Trạng duyệt đơn đăng kí</th>
+                <th style="background-color: #002140; color: white;">Trạng thái SV xác nhận</th>
+                <th style="background-color: #002140; color: white;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data">
+                <td>{{ listContractPending.items.indexOf(data) + 1 }}</td>
+                <td>{{ data.academicYear }}</td>
+                <td>{{ data.studentCode }}</td>
+                <td>{{ data.studentName }}</td>
+                <td *ngIf="data.gender == 1">Nam</td>
+                <td *ngIf="data.gender == 0">Nữ</td>
+                <td>{{ data.studentPhone }}</td>
+                <td>{{ data.dateCreated | date : "dd-MM-yyyy" }}</td>
+                <td>{{ data.fromDate | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data.toDate | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data.desiredPrice | currency : "VND"}}</td>
+                <td>{{ data.roomPrice | currency : "VND" }}</td>
+                <td>{{ data.areaName }}</td>
+                <td>{{ data.roomName }}</td>
+
+                <td *ngIf="data.adminConfirmStatus == 0" style="color: #efbf38;">Chờ duyệt</td>
+                <td *ngIf="data.adminConfirmStatus == 1" style="color: #f40404;">Từ chối</td>
+                <td *ngIf="data.adminConfirmStatus == 2" style="color: #25da91;">Chấp nhận</td>
+
+                <td *ngIf="data.studentConfirmStatus == 0" style="color: #efbf38;">Chờ duyệt</td>
+                <td *ngIf="data.studentConfirmStatus == 1" style="color: #f40404;">Từ chối</td>
+                <td *ngIf="data.studentConfirmStatus == 2" style="color: #25da91;">Chấp nhận</td>
+                <td>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+                        <i nz-icon nzType="bars" nzTheme="outline"></i>
+                    </a>
+                    <nz-dropdown-menu #menu="nzDropdownMenu">
+                        <ul nz-menu>
+                            <li nz-menu-item>
+                                <button (click)="studentConfirm(data.id, 2)"
+                                    [disabled]="data.contractCompletedStatus != undefined || data.roomId == undefined || data.adminConfirmStatus == 0"
+                                    nz-button nzType="text">Chấp nhận</button>
+                            </li>
+                            <li nz-menu-item>
+                                <button (click)="studentConfirm(data.id, 1)"
+                                    [disabled]="data.contractCompletedStatus != undefined || data.roomId == undefined || data.adminConfirmStatus == 0"
+                                    nz-button nzType="text">Từ chối</button>
+                            </li>
+                            <li nz-menu-item>
+                                <button (click)="deleteSignUpForm(data.id)" nz-button nzType="text"
+                                    [disabled]="data.adminConfirmStatus != 0">Xoá</button>
+                            </li>
+                        </ul>
+                    </nz-dropdown-menu>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <nz-pagination *ngIf="listContractPending != undefined" [(nzPageIndex)]="pageIndex"
+        [nzTotal]="listContractPending.totalRecords" [nzPageSize]="10"
+        (nzPageIndexChange)="getListContractPending('', student.id, pageIndex, 10)">
+    </nz-pagination>
+    <b style="float: right;"><i>*Chú ý: ngày bắt đầu hợp đồng là ngày mà sinh viên xác nhận hợp đồng, nhưng hợp đồng nào
+            quá 5 ngày mà không xác nhận sẽ tự động huỷ bỏ</i></b>
+</nz-spin>

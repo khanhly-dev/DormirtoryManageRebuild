@@ -1,0 +1,89 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div nz-row>
+        <div nz-col nzSpan="12">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input type="text" nz-input placeholder="Nhập từ khoá" #inputSearch />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"
+                        (click)="getListContractPending(inputSearch.value, student.id, 1, 10)"></i></button>
+            </ng-template>
+        </div>
+        <div nz-col nzSpan="12" *ngIf="this.listContractPending != undefined">
+            <button nz-button nzType="primary" (click)="showModal()"
+                [disabled]="!CanCreateExtendContract || this.listContractPending.items.length == 0" style="float: right;">Gia hạn</button>
+            <button nz-button nzType="primary" (click)="showModal1()" style="float: right; margin-right: 10px;"
+                [disabled]="!CanCreateSummerContract || this.listContractPending.items.length == 0">Đăng ký ở hè</button>
+        </div>
+    </div>
+    <nz-modal [(nzVisible)]="isVisible" nzTitle="Gia hạn hợp đồng" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+        *ngIf="extendContractTime!= undefined">
+        <ng-container *nzModalContent>
+            Bạn có muốn gia hạn hợp đồng thêm từ ngày <span><b>{{extendContractTime.fromDate | date :
+                    "dd-MM-yyyy"}}</b></span>
+            đến ngày <span><b>{{extendContractTime.toDate | date : "dd-MM-yyyy"}}</b></span>
+        </ng-container>
+    </nz-modal>
+    <br>
+    <nz-modal [(nzVisible)]="isVisible1" nzTitle="Đăng ký ở hè" (nzOnCancel)="handleCancel1()" (nzOnOk)="handleOk1()"
+        *ngIf="summerContractTime!= undefined">
+        <ng-container *nzModalContent>
+            Bạn có muốn đăng ký hợp đồng hè thêm từ ngày <span><b>{{summerContractTime.fromDate | date :
+                    "dd-MM-yyyy"}}</b></span>
+            đến ngày <span><b>{{summerContractTime.toDate | date : "dd-MM-yyyy"}}</b></span>
+        </ng-container>
+    </nz-modal>
+    <nz-table #basicTable [nzData]="listContractPending.items" *ngIf="listContractPending != undefined"
+        [nzFrontPagination]="false">
+        <thead>
+            <tr>
+                <th style="background-color: #002140; color: white;">STT</th>
+                <th style="background-color: #002140; color: white;">Khoá</th>
+                <th style="background-color: #002140; color: white;">Mã sinh viên</th>
+                <th style="background-color: #002140; color: white;">Tên sinh viên</th>
+                <th style="background-color: #002140; color: white;">Giới tính</th>
+                <th style="background-color: #002140; color: white;">Số điện thoại</th>
+                <th style="background-color: #002140; color: white;">Ngày bắt đầu hợp đồng</th>
+                <th style="background-color: #002140; color: white;">Hạn hợp đồng</th>
+                <th style="background-color: #002140; color: white;">Khu ở</th>
+                <th style="background-color: #002140; color: white;">Phòng ở</th>
+                <th style="background-color: #002140; color: white;">Giá phòng</th>
+                <th style="background-color: #002140; color: white;">Trạng thái</th>
+                <th style="background-color: #002140; color: white;">Kiểu hợp đồng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data">
+                <td>{{ listContractPending.items.indexOf(data) + 1 }}</td>
+                <td>{{ data.academicYear }}</td>
+                <td>{{ data.studentCode }}</td>
+                <td>{{ data.studentName }}</td>
+                <td *ngIf="data.gender == 1">Nam</td>
+                <td *ngIf="data.gender == 0">Nữ</td>
+                <td>{{ data.studentPhone }}</td>
+                <td>{{ data.fromDate | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data.toDate | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data.areaName }}</td>
+                <td>{{ data.roomName }}</td>
+                <td>{{ data.roomPrice | currency: "VND" }}</td>
+                <td *ngIf="!compareDate(data.toDate)" style="color: #f40404;">Hết hạn</td>
+                <td *ngIf="compareDate(data.toDate)" style="color: #25da91;">Còn hạn</td>
+
+                <td *ngIf="data.isDelete == false && !data.isExtendContract && !data.isSummerContract"
+                    style="color: #efbf38;">Thường</td>
+                <td *ngIf="data.isDelete == false && data.isExtendContract && !data.isSummerContract"
+                    style="color: #25da91;">Gia hạn</td>
+                <td *ngIf="data.isDelete == true" style="color: #c0c3c8;">Đã huỷ</td>
+                <td *ngIf="data.isDelete == false && !data.isExtendContract && data.isSummerContract"
+                    style="color: #11bde7;">Kỳ hè</td>
+
+            </tr>
+        </tbody>
+    </nz-table>
+    <nz-pagination *ngIf="listContractPending != undefined" [(nzPageIndex)]="pageIndex"
+        [nzTotal]="listContractPending.totalRecords" [nzPageSize]="10"
+        (nzPageIndexChange)="getListContractPending('', student.id, pageIndex, 10)">
+    </nz-pagination>
+    <b style="float: right;"><i>*Chú ý: ngày bắt đầu hợp đồng là ngày mà sinh viên xác nhận hợp đồng, nhưng hợp đồng nào
+            quá 5 ngày mà không xác nhận sẽ tự động huỷ bỏ</i></b>
+</nz-spin>

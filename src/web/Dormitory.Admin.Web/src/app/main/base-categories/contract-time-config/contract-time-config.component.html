@@ -1,0 +1,94 @@
+<div>
+    <h4>Danh sách cấu hình thời gian hợp đồng</h4>
+    <br>
+</div>
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <div nz-row>
+        <div nz-col nzSpan="8">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input type="text" nz-input placeholder="Nhập từ khoá" #inputSearch />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"
+                        (click)="getListConfig(inputSearch.value, 1, 10)"></i></button>
+            </ng-template>
+        </div>
+        <div nz-col nzSpan="16">
+            <button nz-button [nzType]="'primary'" (click)="showModal('Thêm mới cấu hình hợp đồng')" style="float: right;">
+                <span>Thêm mới</span>
+            </button>
+        </div>
+    </div>
+    <br>
+    <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+        <ng-container *nzModalContent>
+            <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Tên cấu hình</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Hãy nhập tên cấu hình">
+                        <input nz-input formControlName="name" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Từ ngày</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Hãy nhập tè ngày">
+                        <input class="form-control" formControlName="fromDate" type="date" style="width : 100%">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Đến ngày</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Hãy nhập đến ngày">
+                        <input class="form-control" formControlName="toDate" type="date" style="width : 100%">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Kỳ hè</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzErrorTip="Hãy chọn kỳ">
+                        <nz-radio-group formControlName="isSummerSemester">
+                            <label nz-radio [nzValue]="true">Có</label>
+                            <label nz-radio [nzValue]="false">Không</label>
+                        </nz-radio-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+            </form>
+        </ng-container>
+    </nz-modal>
+
+    <nz-table #basicTable [nzData]="listContractConfigPending.items" *ngIf="listContractConfigPending != undefined"
+        [nzFrontPagination]="false">
+        <thead>
+            <tr>
+                <th style="background-color: #002140; color: white;">STT</th>
+                <th style="background-color: #002140; color: white;">Tên cấu hình</th>
+                <th style="background-color: #002140; color: white;">Từ ngày</th>
+                <th style="background-color: #002140; color: white;">Đến ngày</th>
+                <th style="background-color: #002140; color: white;">Kỳ</th>
+                <th style="background-color: #002140; color: white;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data">
+                <td>{{ listContractConfigPending.items.indexOf(data) + 1 }}</td>
+                <td>{{ data.name }}</td>
+                <td>{{ data.fromDate | date: "dd-MM-yyyy" }}</td>
+                <td>{{ data.toDate | date: "dd-MM-yyyy"}}</td>
+                <td *ngIf="data.isSummerSemester == true">Kỳ hè</td>
+                <td *ngIf="data.isSummerSemester == false">Kỳ thường</td>
+                <td>
+                    <button nz-button nzSize="small" nzType="primary"
+                        (click)="showModal('Sửa cấu hình hợp đồng', data)">Sửa</button>&nbsp;
+                    <button nz-button nzSize="small" nzDanger nzType="primary"
+                        (click)="deleteConfig(data.id)">Xoá</button>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <nz-pagination *ngIf="listContractConfigPending != undefined" [(nzPageIndex)]="pageIndex"
+        [nzTotal]="listContractConfigPending.totalRecords" [nzPageSize]="10"
+        (nzPageIndexChange)="getListConfig('', pageIndex, 10)"></nz-pagination>
+</nz-spin>

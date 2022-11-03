@@ -1,0 +1,37 @@
+<nz-spin [nzSpinning]="isSpinning" [nzSize]="'large'">
+    <nz-table #basicTable [nzData]="currentStudentContract">
+        <thead>
+            <tr>
+                <th style="background-color: #002140; color: white;">Mã hợp đồng</th>
+                <th style="background-color: #002140; color: white;">Ngày đăng ký</th>
+                <th style="background-color: #002140; color: white;">Ngày bắt đầu</th>
+                <th style="background-color: #002140; color: white;">Ngày kết thúc</th>
+                <th style="background-color: #002140; color: white;">Khu ở</th>
+                <th style="background-color: #002140; color: white;">Phòng ở</th>
+                <th style="background-color: #002140; color: white;">Tiền phòng</th>
+                <th style="background-color: #002140; color: white;">Tiền dịch vụ</th>
+                <th style="background-color: #002140; color: white;">Tổng tiền</th>
+                <th style="background-color: #002140; color: white;">Ngày đóng</th>
+                <th style="background-color: #002140; color: white;">Số tiền đóng</th>
+                <th style="background-color: #002140; color: white;">Trạng thái đóng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data1 of basicTable.data">
+                <td><b>{{ data1.contractCode }}</b> </td>
+                <td>{{ data1.dateCreated | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data1.fromDate | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data1.toDate | date : "dd-MM-yyyy"}}</td>
+                <td>{{ data1.areaName }}</td>
+                <td>{{ data1.roomName }}</td>
+                <td>{{ data1.contractPrice | currency : "VND" }}</td>
+                <td>{{ data1.servicePrice | currency : "VND" }}</td>
+                <td>{{ data1.contractPriceValue | currency : "VND"}}</td>
+                <td>{{ data1.paidDate | date : "dd-MM-yyyy" }}</td>
+                <td>{{ data1.moneyPaid | currency : "VND"}}</td>
+                <td *ngIf="!data1.isPaid" style="color: #f40404;">Chưa đóng</td>
+                <td *ngIf="data1.isPaid" style="color: #25da91;">Đã đóng</td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-spin>
