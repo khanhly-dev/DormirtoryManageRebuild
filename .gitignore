@@ -1,4 +1,4 @@
-/api/.vs
+/src/api/.vs
 /src/api/Dormitory.Admin.Api/bin
 /src/api/Dormitory.Admin.Api/obj
 /src/api/Dormitory.Admin.Application/bin
