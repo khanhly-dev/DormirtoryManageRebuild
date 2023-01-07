@@ -13,7 +13,7 @@ export class SignUpServiceProxy {
     private baseUrl: string;
 
     constructor(private http: HttpClient) {
-        this.baseUrl = "https://localhost:44307";
+        this.baseUrl = "http://localhost:5002";
     }
 
     getListCriteria(): Observable<CriteriaDto[]> {

@@ -14,7 +14,7 @@ export class StudentServiceProxy {
     private baseUrl: string;
 
     constructor(private http: HttpClient) {
-        this.baseUrl = "https://localhost:44307";
+        this.baseUrl = "http://localhost:5002";
     }
 
     getStudentByUserId(userId: number): Observable<StudentInfoDto> {
@@ -48,7 +48,7 @@ export class StudentServiceProxy {
         return this.http.get<PageResultBase<ContractPendingDto>>(url, { headers: headers, observe: 'body', responseType: 'json' });
     }
     getListDiscipline(keyWord: string | null | undefined, pageIndex: number, pageSize: number): Observable<PageResultBase<DisciplineDto>> {
-        let url = 'https://localhost:44332' + `/api/student/get-list-discipline?Keyword=${keyWord}&PageIndex=${pageIndex}&PageSize=${pageSize}`;
+        let url = 'http://localhost:5000' + `/api/student/get-list-discipline?Keyword=${keyWord}&PageIndex=${pageIndex}&PageSize=${pageSize}`;
         url = url.replace(/[?&]$/, "");
         return this.http.get<PageResultBase<DisciplineDto>>(url, { headers: headers, observe: 'body', responseType: 'json' });
     }

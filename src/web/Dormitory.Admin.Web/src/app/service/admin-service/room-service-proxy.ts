@@ -11,7 +11,7 @@ export class RoomServiceProxy {
     private headers!: HttpHeaders
 
     constructor(private http: HttpClient) {
-        this.baseUrl = "https://localhost:44332";
+        this.baseUrl = "http://localhost:5000";
         this.headers = new HttpHeaders({
             "authorization": "Bearer " + localStorage.getItem('access_token') ?? "",
         })

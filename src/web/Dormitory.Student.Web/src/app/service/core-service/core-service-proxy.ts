@@ -9,7 +9,7 @@ export class LoginServiceProxy {
     private baseUrl: string;
 
     constructor(private http: HttpClient) {
-        this.baseUrl = "https://localhost:44345";
+        this.baseUrl = "http://localhost:5001";
     }
     login(userName: string | null | undefined, password: string | null | undefined, tenantId: number | undefined) :Observable<loginInfo>{
         let url_ = this.baseUrl + "/api/core/login";
