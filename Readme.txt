@@ -1,7 +1,8 @@
-- nodejs 16 (required)
-- net core 5 (required)
+- nodejs 16 or higher (required)
+- asp.net core 5 (required)
 - angular (required)
 - visual studio 
+- sql server (required)
 
 cách chạy chương trình
 1: vào thư mục DormitoryManager chạy file DormitoryManager.sln bằng visual studio
@@ -14,6 +15,7 @@ cách chạy chương trình
  - Dormitory.Core.Api
  - Dormitory.Student.Api
  tương ứng với 3 cổng api của backend
+(có thể chạy bằng visual studio hoặc chạy lệnh "dotnet run")
 7: mở cmd tại đường dẫn của 2 thư mục Dormitory.Admin.Web và Dormitory.Student.Web và chạy lệnh "npm install" để cài đặt node_module
 8: sau đó chạy 2 project angular này bằng cách chạy câu lệnh "ng serve"
 9: copy cổng mà angular lắng nghe trên cmd paste lên trình duyệt web
